@@ -4,6 +4,7 @@
 export interface PersonalInfo {
   name: string;
   location: string; // e.g., "City, State"
+  about: string; // A brief description about the person
   github: string; // Optional GitHub profile link
   linkedin: string; // Optional LinkedIn profile link
   jobs: WorkExperience[]; // Array of work experiences
@@ -64,6 +65,8 @@ export interface Project {
   title: string;
   description: string;
   technologies: string[];
+  started: Date; // When the project was started
+  isUnderDevelopment: boolean; // Whether the project is under development
   link: string; // Optional link to the project
   image: string; // Optional image URL for the project
 }

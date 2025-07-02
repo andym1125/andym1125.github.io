@@ -1,18 +1,18 @@
 import { useState } from 'react'
 // import './App.css'
-import BarbieResume from './components/BarbieResume'
-import HorrorPosterResume from './components/HorrorPosterResume'
-import NeonTokyoResume from './components/NeonTokyoResume'
+import BarbieResume from './components/Resume/BarbieResume'
+import HorrorPosterResume from './components/Resume/HorrorPosterResume'
+import NeonTokyoResume from './components/Resume/NeonTokyoResume'
 import { andyPersonalInfo } from './components/personalInfo'
-import TypewriterResume from './components/TypewriterResume'
-import Y2KResume from './components/Y2KResume'
-import { ComponentRoulette } from './components/ComponentRoulette'
-import MacintoshResume from './components/MacintoshResume'
-import CliResume from './components/CliResume'
-import RetroGameResume from './components/RetroGamingResume'
-import NoirResume from './components/NoirResume'
-import GlassMorphismResume from './components/GlassMorphismResume'
-import PostcardResume from './components/PostcardResume'
+import TypewriterResume from './components/Resume/TypewriterResume'
+import Y2KResume from './components/Resume/Y2KResume'
+import MacintoshResume from './components/Resume/MacintoshResume'
+import CliResume from './components/Resume/CliResume'
+import RetroGameResume from './components/Resume/RetroGamingResume'
+import NoirResume from './components/Resume/NoirResume'
+import GlassMorphismResume from './components/Resume/GlassMorphismResume'
+import PostcardResume from './components/Resume/PostcardResume'
+import TronResume from './components/TronTheme/TronResume'
 
 /**
  * An example App component to demonstrate the ComponentRoulette in fullscreen.
@@ -36,13 +36,13 @@ const App = () => {
 
   return (
     // Main container is now relative and takes the full screen
-    <div className="relative h-screen w-screen bg-gray-900 ">
-      <ComponentRoulette
+    <div className="relative h-screen w-screen bg-gray-900">
+      {/* <ComponentRoulette
         key={rouletteKey}
         components={componentsToSpin}
         spinDuration={4000}
-      />
-
+      /> */}
+      <TronResume personalInfo={andyPersonalInfo} />
       {/* Floating "Spin Again" button */}
       <button
         onClick={() => setRouletteKey(prev => prev + 1)}
