@@ -129,7 +129,7 @@ const TronResume: React.FC<{ personalInfo: PersonalInfo }> = ({
             isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
           }`}
         >
-          <h1 className="text-6xl font-bold bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent mb-4 font-mono glow-animation hover:from-cyan-200 hover:to-blue-300 transition-all duration-300">
+          <h1 className="text-6xl font-bold bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent mb-4 font-mono hover:from-cyan-200 hover:to-blue-300 transition-all duration-300">
             {personalInfo.name}
           </h1>
           <div className="flex justify-center items-center gap-6 text-cyan-300 font-mono">

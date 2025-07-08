@@ -6,7 +6,7 @@ const EducationCard = ({ education }: { education: any }) => {
     <div className={sectionClasses}>
       <h2 className={headerClasses}>
         <GraduationCap className="w-6 h-6" />
-        Neural Training Matrix
+        Education
       </h2>
       <div className="border-l-2 border-blue-500/40 pl-6 relative group hover:border-blue-300 transition-all duration-300 cursor-pointer hover:pl-8">
         <div className="absolute -left-2 top-0 w-4 h-4 bg-blue-500 rounded-full shadow-lg shadow-blue-500/50 group-hover:w-5 group-hover:h-5 group-hover:-left-2.5 group-hover:shadow-blue-300/70 transition-all duration-300" />

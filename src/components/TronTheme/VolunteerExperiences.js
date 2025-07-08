@@ -1,9 +1,0 @@
-import { Fragment as _Fragment, jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { Heart } from "lucide-react";
-import { sectionClasses, headerClasses, formatDate } from "../utilities";
-const VolunteerExperiences = ({ volunteer, }) => {
-    if (!volunteer || volunteer.length === 0)
-        return _jsx(_Fragment, {});
-    return (_jsxs("div", { className: sectionClasses, children: [_jsxs("h2", { className: headerClasses, children: [_jsx(Heart, { className: "w-6 h-6" }), "Volunteer Experience"] }), volunteer.map((vol, index) => (_jsxs("div", { className: "mb-4 last:mb-0 border-l-2 border-purple-500/40 pl-6 relative group hover:border-purple-300 transition-all duration-300 cursor-pointer hover:pl-8", children: [_jsx("div", { className: "absolute -left-2 top-0 w-4 h-4 bg-purple-500 rounded-full shadow-lg shadow-purple-500/50 group-hover:w-5 group-hover:h-5 group-hover:-left-2.5 group-hover:shadow-purple-300/70 transition-all duration-300" }), _jsx("h3", { className: "text-lg font-bold text-purple-300 font-mono group-hover:text-purple-200 transition-colors duration-300", children: vol.position }), _jsxs("p", { className: "text-purple-200 font-mono group-hover:text-purple-100 transition-colors duration-300", children: [vol.organization, " ", vol.suborganization && `- ${vol.suborganization}`] }), _jsxs("p", { className: "text-sm text-gray-400 mb-2 group-hover:text-gray-300 transition-colors duration-300", children: [formatDate(vol.startDate), " -", " ", vol.current ? "Present" : formatDate(vol.endDate)] }), _jsx("ul", { className: "text-gray-300 group-hover:text-gray-200 transition-colors duration-300", children: vol.descriptionBulletPoints.map((point, idx) => (_jsxs("li", { className: "mb-1 font-mono text-sm hover:text-purple-200 transition-colors duration-200", children: ["\u2022 ", point] }, idx))) })] }, index)))] }));
-};
-export default VolunteerExperiences;
