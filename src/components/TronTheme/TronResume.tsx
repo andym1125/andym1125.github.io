@@ -3,10 +3,10 @@ import {
   Github,
   Linkedin,
   MapPin,
-  Award,
   Code,
   Briefcase,
   GraduationCap,
+  Binary,
 } from "lucide-react";
 import type { PersonalInfo } from "../../types";
 import TronBackground from "./TronBackground";
@@ -139,6 +139,7 @@ const TronResume: React.FC<{ personalInfo: PersonalInfo }> = ({
             </div>
             <a
               href={personalInfo.github}
+              target="_blank"
               className="flex items-center gap-2 hover:text-cyan-200 transition-all duration-300 hover:scale-110 hover-glow p-2 rounded group"
             >
               <Github className="w-4 h-4 group-hover:rotate-12 transition-transform duration-300" />
@@ -146,6 +147,7 @@ const TronResume: React.FC<{ personalInfo: PersonalInfo }> = ({
             </a>
             <a
               href={personalInfo.linkedin}
+              target="_blank"
               className="flex items-center gap-2 hover:text-cyan-200 transition-all duration-300 hover:scale-110 hover-glow p-2 rounded group"
             >
               <Linkedin className="w-4 h-4 group-hover:rotate-12 transition-transform duration-300" />
@@ -159,7 +161,7 @@ const TronResume: React.FC<{ personalInfo: PersonalInfo }> = ({
           <div className="bg-black/90 backdrop-blur-sm border border-cyan-500/50 rounded-full p-2 flex gap-2 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-400/30 transition-all duration-300">
             {[
               { id: "about", label: "About", icon: Code },
-              { id: "work", label: "Job Experience", icon: Briefcase },
+              { id: "work", label: "Job Experience", icon: Binary },
               {
                 id: "volunteer",
                 label: "Volunteer/Board Experience",
@@ -171,7 +173,7 @@ const TronResume: React.FC<{ personalInfo: PersonalInfo }> = ({
                 onClick={() => setActiveSection(id)}
                 className={`px-6 py-2 rounded-full font-mono text-sm transition-all duration-300 flex items-center gap-2 hover:scale-105 group ${
                   activeSection === id
-                    ? "bg-cyan-400 text-black shadow-lg shadow-cyan-400/50 hover:bg-cyan-300"
+                    ? "bg-cyan-400 text-white-300 shadow-lg shadow-cyan-400/50 hover:bg-cyan-300"
                     : "text-cyan-300 hover:text-cyan-200 hover:bg-cyan-400/20 hover:shadow-cyan-400/30"
                 }`}
               >

@@ -3,9 +3,9 @@ import type { PersonalInfo } from "../types";
 export const andyPersonalInfo: PersonalInfo = {
   name: "Andy McDowall",
   about: "A passionate software developer with a knack for creating innovative solutions and a love for all things tech. I thrive on challenges and enjoy pushing the boundaries of what's possible in software development.",
-  location: "Dallas, TX",
-  github: "https://github.com/chadcyber2000",
-  linkedin: "https://linkedin.com/in/chadcyberson",
+  location: "Dallas-Fort Worth, TX",
+  github: "https://github.com/andym1125",
+  linkedin: "https://www.linkedin.com/in/michaelmcdowall/",
   jobs: [
     {
       company: "Paycom",
@@ -15,13 +15,11 @@ export const andyPersonalInfo: PersonalInfo = {
       current: true,
       location: "Irving, TX",
       descriptionBulletPoints: [
-        "TODO: fill in",
-        "Created mind-blowing websites with animated GIFs and MIDI soundtracks",
-        "Mastered the art of <marquee> tags and table-based layouts",
-        "Implemented cutting-edge Flash intros that took 5 minutes to load",
-        "Achieved 100% visitor retention through auto-playing music",
+        "Developed full-stack customized HCM solutions , collaborating with cross-functional teams to deliver client-spcific reports and integrate with third party systems.",
+        "Managed multiple conceurrent development projects while maintaining clear communication with clients, vendors, and internal stakeholders to ensure the spirit, as well as the letter, of the requirements were met.",
+        "Led development of integrations connecting client systems with third-party vendors, ensuring data accuracy and maintaining clear documentation throughout project lifecycle.",
       ],
-      technologies: ["HTML", "Flash", "Dreamweaver", "FrontPage", "JavaScript"],
+      technologies: ["C#", ".NET", "PHP", "MySQL", "React", "RabbitMQ"],
     },
     {
       company: "UNT CSCE Department",
@@ -44,7 +42,7 @@ export const andyPersonalInfo: PersonalInfo = {
       current: false,
       location: "Dallas, TX",
       descriptionBulletPoints: [
-        "Engineered enhancements for an event sourced CQRS invoice decisioning system using C# .NET and Kafka.",
+        "Engineered enhancements for an event sourced CQRS invoice decisioning system.",
         "Achieved over 10% increase in code coverage across two repositories, mitigating technical debt and ensuring more robust code quality, and presented on benefit to company to C-suite.",
         `Presented comprehensive research findings on viable Document Management System solutions to management, outlining
 technological methodologies and highlighting their tangible business applications, and drafted a Request for Proposal to distribute to
@@ -68,6 +66,32 @@ three selected vendors.`,
     },
   ],
   volunteer: [
+    {
+      organization: "Texas Academy of Mathematics and Science Advisory Board",
+      suborganization: "Univ. of North Texas",
+      position: "Member",
+      startDate: new Date("2024-05-01"),
+      endDate: new Date("2030-05-01"),
+      current: true,
+      location: "",
+      descriptionBulletPoints: [
+        "Provided strategic guidance and support to the Texas Academy of Mathematics and Science, enhancing the academic and extracurricular experience for gifted students.",
+        "Collaborated with faculty and administration to develop initiatives that promote academic excellence and student well-being.",
+      ],
+    },
+    {
+      organization: "UNT Community Advisory Group",
+      suborganization: "Univ. of North Texas",
+      position: "Member",
+      startDate: new Date("2024-03-01"),
+      endDate: new Date("2024-05-01"),
+      current: true,
+      location: "Denton, TX",
+      descriptionBulletPoints: [
+        "Collaborated with university leadership to enhance community engagement and address local issues.",
+        "Provided insights and recommendations to improve university-community relations.",
+      ],
+    },
     {
       organization: "UNT Presidential Search Committee",
       suborganization: "Univ. of North Texas",

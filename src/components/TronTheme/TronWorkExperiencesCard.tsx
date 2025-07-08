@@ -1,11 +1,12 @@
-import { Briefcase, Calendar, MapPin } from "lucide-react";
+import { Binary, MapPin } from "lucide-react";
 import type { WorkExperience } from "../../types";
 import { formatDate, headerClasses, sectionClasses } from "../utilities";
+import Chip from "./Chip";
 
 const TronWorkExperiencesCard = ({ jobs }: { jobs: WorkExperience[] }) => {
   return <div className={sectionClasses}>
     <h2 className={headerClasses}>
-      <Briefcase className="w-6 h-6" />
+      <Binary className="w-6 h-6" />
       Work Experience
     </h2>
     {jobs.map((job, index) => (
@@ -27,13 +28,11 @@ const TronWorkExperiencesCard = ({ jobs }: { jobs: WorkExperience[] }) => {
               {job.location}
             </p>
           </div>
-          <div className="text-right text-sm text-gray-400 font-mono group-hover:text-gray-300 transition-colors duration-300">
-            <div className="flex items-center gap-1">
-              <Calendar className="w-3 h-3" />
-              {formatDate(job.startDate)} -{" "}
-              {job.current ? "Present" : formatDate(job.endDate)}
-            </div>
-          </div>
+          <Chip
+            label={`${formatDate(job.startDate)} - ${job.current ? "Present" : formatDate(job.endDate)}`}
+            theme="primary"
+            isVisible={true}
+          />
         </div>
         <ul className="text-gray-300 mb-4 group-hover:text-gray-200 transition-colors duration-300">
           {job.descriptionBulletPoints.map((point, idx) => (
@@ -47,12 +46,12 @@ const TronWorkExperiencesCard = ({ jobs }: { jobs: WorkExperience[] }) => {
         </ul>
         <div className="flex flex-wrap gap-2">
           {job.technologies.map((tech, idx) => (
-            <span
+            <Chip
               key={idx}
-              className="px-3 py-1 bg-cyan-400/20 border border-cyan-400/60 rounded-full text-xs font-mono text-cyan-300 tech-tag hover:bg-cyan-300/30 hover:border-cyan-300 hover:text-cyan-200 hover:scale-105 transition-all duration-300 cursor-pointer"
-            >
-              {tech}
-            </span>
+              label={tech}
+              theme="secondary"
+              isVisible={true}
+            />
           ))}
         </div>
       </div>

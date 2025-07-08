@@ -1,4 +1,4 @@
-import { SquareChevronRight } from "lucide-react";
+import { Boxes, SquareChevronRight } from "lucide-react";
 import type { Project } from "../../types";
 import { headerClasses, sectionClasses } from "../utilities";
 
@@ -6,7 +6,7 @@ const ProjectsCard = ({ projects }: { projects: Project[] }) => {
   return (
     <>
       <h2 className={headerClasses}>
-        <SquareChevronRight className="w-6 h-6" />
+        <Boxes className="w-6 h-6" />
         Projects
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -35,6 +35,7 @@ const ProjectsCard = ({ projects }: { projects: Project[] }) => {
               {project.link ? (
                 <a
                   href={project.link}
+                  target="_blank"
                   className="text-cyan-400 hover:text-cyan-200 font-mono text-sm transition-all duration-300 hover:scale-105 inline-block hover-glow p-1 rounded"
                 >
                   View Project →

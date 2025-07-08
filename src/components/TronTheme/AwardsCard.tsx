@@ -1,12 +1,13 @@
-import { Award } from "lucide-react";
+import { Gem } from "lucide-react";
 import { sectionClasses, headerClasses } from "../utilities";
 import type { Award as AwardType } from "../../types";
+import Chip from "./Chip";
 
 const AwardsCard = ({ awards }: { awards: AwardType[] }) => {
   return (
     <div className={sectionClasses}>
       <h2 className={headerClasses}>
-        <Award className="w-6 h-6" />
+        <Gem className="w-6 h-6" />
         Achievements
       </h2>
       {awards.map((award, index) => (
@@ -18,10 +19,22 @@ const AwardsCard = ({ awards }: { awards: AwardType[] }) => {
           <p className="text-yellow-200 text-sm font-mono">
             {award.organization}
           </p>
-          <p className="text-gray-400 text-xs mb-2">
-            {award.date.toString()} • {award.location}
-          </p>
+          <div className="flex justify-between items-center mt-4">
+            <p className="text-gray-400 text-xs mb-2">{award.location}</p>
+          </div>
+
           <p className="text-gray-300 text-sm">{award.description}</p>
+          <div className="flex justify-between items-center mt-4">
+            <div/>
+            <Chip
+              label={award.date.toLocaleString("default", {
+                month: "long",
+                year: "numeric",
+              })}
+              theme="secondary"
+              isVisible={true}
+            />
+          </div>
         </div>
       ))}
     </div>
