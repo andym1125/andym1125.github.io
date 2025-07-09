@@ -17,12 +17,14 @@ import ProjectsCard from "./ProjectsCard";
 import EducationCard from "./EducationCard";
 import AwardsCard from "./AwardsCard";
 import SidebarLayout from "./SidebarLayout";
+import { useWindowAtLeast } from "../../useWindowSize";
 
 const TronResume: React.FC<{ personalInfo: PersonalInfo }> = ({
   personalInfo,
 }) => {
   const [activeSection, setActiveSection] = useState("about");
   const [isVisible, setIsVisible] = useState(false);
+  const isLargeScreen = useWindowAtLeast(600)
 
   useEffect(() => {
     setIsVisible(true);
@@ -135,7 +137,8 @@ const TronResume: React.FC<{ personalInfo: PersonalInfo }> = ({
           <div className="flex justify-center items-center gap-6 text-cyan-300 font-mono">
             <div className="flex items-center gap-2 hover:text-cyan-200 hover:scale-110 transition-all duration-300 cursor-pointer hover-glow p-2 rounded">
               <MapPin className="w-4 h-4" />
-              <span>{personalInfo.location}</span>
+              
+              {isLargeScreen ? <span>{personalInfo.location}</span>: <span>DFW, TX</span>}
             </div>
             <a
               href={personalInfo.github}
@@ -160,14 +163,15 @@ const TronResume: React.FC<{ personalInfo: PersonalInfo }> = ({
         <div className="flex justify-center mb-8">
           <div className="bg-black/90 backdrop-blur-sm border border-cyan-500/50 rounded-full p-2 flex gap-2 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-400/30 transition-all duration-300">
             {[
-              { id: "about", label: "About", icon: Code },
-              { id: "work", label: "Job Experience", icon: Binary },
+              { id: "about", label: "About", shortLabel: "About", icon: Code },
+              { id: "work", label: "Job Experience", shortLabel: "Jobs", icon: Binary },
               {
                 id: "volunteer",
                 label: "Volunteer/Board Experience",
+                shortLabel: "Volunteering",
                 icon: GraduationCap,
               },
-            ].map(({ id, label, icon: Icon }) => (
+            ].map(({ id, label, shortLabel, icon: Icon }) => (
               <button
                 key={id}
                 onClick={() => setActiveSection(id)}
@@ -178,7 +182,9 @@ const TronResume: React.FC<{ personalInfo: PersonalInfo }> = ({
                 }`}
               >
                 <Icon className="w-4 h-4 group-hover:rotate-12 transition-transform duration-300" />
-                {label}
+                {
+                  isLargeScreen ? label : shortLabel
+                }
               </button>
             ))}
           </div>
