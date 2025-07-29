@@ -13,6 +13,7 @@ import NoirResume from './components/Resume/NoirResume'
 import GlassMorphismResume from './components/Resume/GlassMorphismResume'
 import PostcardResume from './components/Resume/PostcardResume'
 import TronResume from './components/TronTheme/TronResume'
+import ComponentRoulette from './components/ComponentRoulette'
 
 /**
  * An example App component to demonstrate the ComponentRoulette in fullscreen.
@@ -32,19 +33,20 @@ const App = () => {
     <NoirResume personalInfo={andyPersonalInfo} />, // 4/5, pretty neat, neats work to be amazing
     <GlassMorphismResume personalInfo={andyPersonalInfo} />, // 4/5, pretty neat
     <PostcardResume personalInfo={andyPersonalInfo} />, // 3/5, mid
+    <TronResume personalInfo={andyPersonalInfo} /> //10/10, very good
   ];
 
   return (
     // Main container is now relative and takes the full screen
     <div className="relative h-screen w-screen bg-gray-900">
-      {/* <ComponentRoulette
+      <ComponentRoulette
         key={rouletteKey}
         components={componentsToSpin}
         spinDuration={4000}
-      /> */}
-      <TronResume personalInfo={andyPersonalInfo} />
+      /> 
+      
       {/* Floating "Spin Again" button */}
-      {/* <button
+      <button
         onClick={() => setRouletteKey(prev => prev + 1)}
         className="fixed bottom-8 right-8 z-50 w-20 h-20 bg-gray-700 text-white rounded-full shadow-lg hover:bg-gray-600 transition-all duration-300 flex items-center justify-center transform hover:scale-110"
         aria-label="Spin Again"
@@ -52,7 +54,7 @@ const App = () => {
         <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h5M20 20v-5h-5M4 4l1.5 1.5A9 9 0 0120.5 11M20 20l-1.5-1.5A9 9 0 013.5 13" />
         </svg>
-      </button> */}
+      </button>
     </div>
   );
 };
