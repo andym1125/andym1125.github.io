@@ -21,6 +21,11 @@ import ComponentRoulette from './components/ComponentRoulette'
 const App = () => {
   const [rouletteKey, setRouletteKey] = useState(0);
 
+const stillComponents = [
+    <TronResume personalInfo={andyPersonalInfo} />, // 10/10, very good
+    <CliResume personalInfo={andyPersonalInfo} />, // 5/5, amazing interactivity
+  ];
+
   const componentsToSpin = [
     <Y2KResume personalInfo={andyPersonalInfo} />, // 4/5
     <TypewriterResume personalInfo={andyPersonalInfo} />, // 1/5
@@ -28,12 +33,11 @@ const App = () => {
     <NeonTokyoResume personalInfo={andyPersonalInfo} />, // 4/5, hook error
     <HorrorPosterResume personalInfo={andyPersonalInfo} />, // 5/5, best one yet
     <MacintoshResume personalInfo={andyPersonalInfo} />, // 5/5, amazing interactivity
-    <CliResume personalInfo={andyPersonalInfo} />, // 5/5, amazing interactivity
     <RetroGameResume personalInfo={andyPersonalInfo} />, // 3/5, mid
     <NoirResume personalInfo={andyPersonalInfo} />, // 4/5, pretty neat, neats work to be amazing
     <GlassMorphismResume personalInfo={andyPersonalInfo} />, // 4/5, pretty neat
     <PostcardResume personalInfo={andyPersonalInfo} />, // 3/5, mid
-    <TronResume personalInfo={andyPersonalInfo} /> //10/10, very good
+    ...stillComponents
   ];
 
   return (
@@ -41,7 +45,8 @@ const App = () => {
     <div className="relative h-screen w-screen bg-gray-900">
       <ComponentRoulette
         key={rouletteKey}
-        components={componentsToSpin}
+        stillComponents={stillComponents}
+        spinningComponents={componentsToSpin}
         spinDuration={4000}
       /> 
       

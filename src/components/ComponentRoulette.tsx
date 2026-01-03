@@ -4,7 +4,8 @@ import React, { useState, useEffect, ReactElement } from 'react';
 
 interface ComponentRouletteProps {
   /** An array of components to cycle through. */
-  components: ReactElement[];
+  stillComponents: ReactElement[];
+  spinningComponents: ReactElement[];
   /** Total duration of the spin animation in milliseconds. */
   spinDuration?: number;
   /** The index of the component to land on. If not provided, a random one will be chosen. */
@@ -16,24 +17,26 @@ interface ComponentRouletteProps {
  * animation before settling on a final one.
  */
 export const ComponentRoulette: React.FC<ComponentRouletteProps> = ({
-  components,
+  stillComponents,
+  spinningComponents,
   spinDuration = 6000, // Default spin time: 4 seconds
   finalIndex,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isSpinning, setIsSpinning] = useState(true);
+  const [currSafeIndex, setCurrSafeIndex] = useState(Math.floor(Math.random() * stillComponents.length));
+  const [isSpinning, setIsSpinning] = useState(false);
   const [isFading, setIsFading] = useState(false);
 
   useEffect(() => {
-    if (!components || components.length === 0) {
+    if (!spinningComponents || spinningComponents.length === 0) {
       setIsSpinning(false);
       return;
     }
 
     setIsSpinning(true);
-    const targetIndex = finalIndex !== undefined && finalIndex < components.length
+    const targetIndex = finalIndex !== undefined && finalIndex < spinningComponents.length
       ? finalIndex
-      : Math.floor(Math.random() * components.length);
+      : Math.floor(Math.random() * spinningComponents.length);
 
     let spinTimeoutId: NodeJS.Timeout;
     
@@ -43,7 +46,7 @@ export const ComponentRoulette: React.FC<ComponentRouletteProps> = ({
         
         // After a short fade, switch the component and fade back in
         setTimeout(() => {
-          setCurrentIndex(prevIndex => (prevIndex + 1) % components.length);
+          setCurrentIndex(prevIndex => (prevIndex + 1) % spinningComponents.length);
           setIsFading(false); // Start fade-in
         }, 25); // This should match the transition duration
 
@@ -70,9 +73,9 @@ export const ComponentRoulette: React.FC<ComponentRouletteProps> = ({
       clearTimeout(spinTimeoutId);
       clearTimeout(stopTimeoutId);
     };
-  }, [components, spinDuration, finalIndex]);
+  }, [stillComponents, spinningComponents, spinDuration, finalIndex]);
 
-  if (!components || components.length === 0) {
+  if (!spinningComponents || spinningComponents.length === 0) {
     return null;
   }
   
@@ -83,7 +86,7 @@ export const ComponentRoulette: React.FC<ComponentRouletteProps> = ({
   return (
     <div className="">
       <div className={`transition-all duration-100 ease-in-out ${transitionClasses}`}>
-        {components[currentIndex]}
+        {isSpinning ? spinningComponents[currentIndex] : stillComponents[currSafeIndex]}
       </div>
     </div>
   );
