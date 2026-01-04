@@ -2,25 +2,30 @@ import React, { useRef, useEffect, useState } from 'react';
 
 interface EverythingEverywhereButtonProps {
   onClick: () => void;
-  animateOnHover?: boolean;
 }
 
 interface Star {
-  x: number;
-  y: number;
-  z: number;
-  prevX?: number;
-  prevY?: number;
+  angle: number;
+  distance: number;
+  speed: number;
+  flashProgress: number;
+  flashColor: string;
+  // Floating mode properties
+  floatX?: number;
+  floatY?: number;
+  floatVx?: number;
+  floatVy?: number;
+  markedForRemoval?: boolean;
 }
 
 export const EverythingEverywhereButton: React.FC<EverythingEverywhereButtonProps> = ({
-  onClick,
-  animateOnHover = false
+  onClick
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isHovered, setIsHovered] = useState(false);
   const starsRef = useRef<Star[]>([]);
   const animationFrameRef = useRef<number | undefined>(undefined);
+  const [isHovered, setIsHovered] = useState(false);
+  const isHoveredRef = useRef(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -29,24 +34,41 @@ export const EverythingEverywhereButton: React.FC<EverythingEverywhereButtonProp
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Set canvas size
+    // Set canvas size to match the max expanded size (240px * 1.5 = 360px)
+    // This ensures crisp rendering at full scale
     const updateCanvasSize = () => {
-      const button = canvas.parentElement;
-      if (button) {
-        canvas.width = button.offsetWidth;
-        canvas.height = button.offsetHeight;
-      }
+      const size = 360;
+      canvas.width = size;
+      canvas.height = size;
     };
     updateCanvasSize();
 
-    // Initialize stars
-    const numStars = 24;
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const outerRadius = canvas.width / 2;
+    const innerRadius = 67; // Keep inner black circle at original size (200/3 ≈ 67)
+
+    // Flash colors
+    const flashColors = ['#ff00ff', '#00ffff', '#ffff00', '#ff0080', '#00ff80', '#ff8000'];
+
+    // Initialize stars in floating mode (18 stars)
+    const numFloatingStars = 18;
     const stars: Star[] = [];
-    for (let i = 0; i < numStars; i++) {
+    for (let i = 0; i < numFloatingStars; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const distance = innerRadius + Math.random() * (outerRadius - innerRadius);
       stars.push({
-        x: Math.random() * canvas.width - canvas.width / 2,
-        y: Math.random() * canvas.height - canvas.height / 2,
-        z: Math.random() * canvas.width,
+        angle,
+        distance,
+        speed: 0.5 + Math.random() * 1,
+        flashProgress: 0,
+        flashColor: flashColors[Math.floor(Math.random() * flashColors.length)],
+        // Initialize floating properties
+        floatX: centerX + Math.cos(angle) * distance,
+        floatY: centerY + Math.sin(angle) * distance,
+        floatVx: (Math.random() - 0.5) * 0.3,
+        floatVy: (Math.random() - 0.5) * 0.3,
+        markedForRemoval: false
       });
     }
     starsRef.current = stars;
@@ -55,59 +77,165 @@ export const EverythingEverywhereButton: React.FC<EverythingEverywhereButtonProp
     const animate = () => {
       if (!ctx || !canvas) return;
 
-      // Only animate if always on, or if hovering when hover mode is enabled
-      const shouldAnimate = !animateOnHover || isHovered;
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Clear canvas with semi-transparent black for trail effect
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+      // Draw outer ring with radial opacity blur (fades to transparent at edges)
+      const gradient = ctx.createRadialGradient(centerX, centerY, innerRadius, centerX, centerY, outerRadius);
+      gradient.addColorStop(0, 'rgba(20, 0, 40, 0)');
+      gradient.addColorStop(0.4, 'rgba(30, 0, 60, 0.4)');
+      gradient.addColorStop(0.7, 'rgba(20, 0, 40, 0.3)');
+      gradient.addColorStop(1, 'rgba(10, 0, 30, 0)'); // Fade to transparent at edges
+      ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Center point
-      const centerX = canvas.width / 2;
-      const centerY = canvas.height / 2;
+      // Draw stars
+      stars.forEach((star, index) => {
+        if (isHoveredRef.current) {
+          // ZOOMING MODE: Stars move inward and flash at center
 
-      stars.forEach((star) => {
-        if (shouldAnimate) {
-          // Move star away (increase z) - reversing direction
-          star.z += 4;
+          // Move star inward continuously
+          if (star.flashProgress <= 0) {
+            star.distance -= star.speed;
 
-          // Reset star if it gets too far
-          if (star.z >= canvas.width) {
-            star.z = 0;
-            star.x = Math.random() * canvas.width - canvas.width / 2;
-            star.y = Math.random() * canvas.height - canvas.height / 2;
-            // Clear previous position to avoid connecting old and new positions
-            star.prevX = undefined;
-            star.prevY = undefined;
+            // Check if star hit the inner circle
+            if (star.distance <= innerRadius) {
+              star.flashProgress = 1; // Start flash
+            }
+          }
+
+          // Animate flash
+          if (star.flashProgress > 0) {
+            star.flashProgress -= 0.05;
+            if (star.flashProgress <= 0) {
+              // Reset star at outer edge after flash completes
+              star.distance = outerRadius;
+              star.angle = Math.random() * Math.PI * 2;
+              star.flashColor = flashColors[Math.floor(Math.random() * flashColors.length)];
+              star.flashProgress = 0;
+            }
+          }
+
+          // Calculate star position from polar coordinates
+          const x = centerX + Math.cos(star.angle) * star.distance;
+          const y = centerY + Math.sin(star.angle) * star.distance;
+
+          // Draw flash if active
+          if (star.flashProgress > 0) {
+            const flashRadius = 2.5 + (1 - star.flashProgress) * 6.25;
+            const flashGradient = ctx.createRadialGradient(x, y, 0, x, y, flashRadius);
+            flashGradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+            flashGradient.addColorStop(0.3, 'rgba(255, 255, 255, 0.9)');
+            flashGradient.addColorStop(0.6, 'rgba(255, 255, 255, 0.6)');
+            flashGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            ctx.fillStyle = flashGradient;
+            ctx.beginPath();
+            ctx.arc(x, y, flashRadius, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Add bright core for extra intensity
+            ctx.fillStyle = 'rgba(255, 255, 255, ' + star.flashProgress + ')';
+            ctx.beginPath();
+            ctx.arc(x, y, flashRadius * 0.3, 0, Math.PI * 2);
+            ctx.fill();
+          } else if (star.distance > innerRadius) {
+            // Draw normal star (only if not flashing and outside inner circle)
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(x, y, 2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        } else {
+          // FLOATING MODE: Stars drift randomly like underwater particles
+          if (star.markedForRemoval) {
+            // Flash and fade out
+            if (star.flashProgress > 0) {
+              star.flashProgress -= 0.05;
+            }
+
+            const flashRadius = 2.5 + (1 - star.flashProgress) * 6.25;
+            const flashGradient = ctx.createRadialGradient(star.floatX!, star.floatY!, 0, star.floatX!, star.floatY!, flashRadius);
+            flashGradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+            flashGradient.addColorStop(0.3, 'rgba(255, 255, 255, 0.9)');
+            flashGradient.addColorStop(0.6, 'rgba(255, 255, 255, 0.6)');
+            flashGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            ctx.fillStyle = flashGradient;
+            ctx.beginPath();
+            ctx.arc(star.floatX!, star.floatY!, flashRadius, 0, Math.PI * 2);
+            ctx.fill();
+          } else if (index < numFloatingStars) {
+            // Only animate the first 18 stars in floating mode
+            // Update position with random drift
+            star.floatX! += star.floatVx!;
+            star.floatY! += star.floatVy!;
+
+            // Bounce off edges with circular boundary
+            const dx = star.floatX! - centerX;
+            const dy = star.floatY! - centerY;
+            const distFromCenter = Math.sqrt(dx * dx + dy * dy);
+
+            if (distFromCenter > outerRadius - 5) {
+              // Reverse velocity when hitting outer edge
+              const angle = Math.atan2(dy, dx);
+              star.floatVx = -Math.cos(angle) * 0.3;
+              star.floatVy = -Math.sin(angle) * 0.3;
+            } else if (distFromCenter < innerRadius + 5) {
+              // Reverse velocity when hitting inner edge
+              const angle = Math.atan2(dy, dx);
+              star.floatVx = Math.cos(angle) * 0.3;
+              star.floatVy = Math.sin(angle) * 0.3;
+            }
+
+            // Add small random wobble for underwater effect
+            star.floatVx! += (Math.random() - 0.5) * 0.02;
+            star.floatVy! += (Math.random() - 0.5) * 0.02;
+
+            // Limit velocity
+            const speed = Math.sqrt(star.floatVx! ** 2 + star.floatVy! ** 2);
+            if (speed > 0.5) {
+              star.floatVx! = (star.floatVx! / speed) * 0.5;
+              star.floatVy! = (star.floatVy! / speed) * 0.5;
+            }
+
+            // Draw floating star
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(star.floatX!, star.floatY!, 2, 0, Math.PI * 2);
+            ctx.fill();
           }
         }
-
-        // Project 3D to 2D
-        const scale = 200 / (200 + star.z);
-        const x2d = star.x * scale + centerX;
-        const y2d = star.y * scale + centerY;
-
-        // Draw star trail
-        if (star.prevX !== undefined && star.prevY !== undefined && shouldAnimate) {
-          ctx.beginPath();
-          ctx.moveTo(star.prevX, star.prevY);
-          ctx.lineTo(x2d, y2d);
-          ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-          ctx.lineWidth = scale * 2;
-          ctx.stroke();
-        }
-
-        // Draw star point
-        const size = Math.max(0, scale * 2);
-        ctx.fillStyle = 'white';
-        ctx.beginPath();
-        ctx.arc(x2d, y2d, size, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Store position for trail
-        star.prevX = x2d;
-        star.prevY = y2d;
       });
+
+      // Remove stars marked for removal after flash completes
+      if (!isHoveredRef.current) {
+        starsRef.current = stars.filter(star => !star.markedForRemoval || star.flashProgress > 0);
+      }
+
+      // Draw inner black circle
+      ctx.fillStyle = '#000000';
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Draw text in center
+      ctx.fillStyle = 'white';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      if (isHoveredRef.current) {
+        // Expanded mode: show full text
+        ctx.font = 'bold 12px sans-serif';
+        ctx.fillText('Everything,', centerX, centerY - 15);
+        ctx.fillText('Everywhere,', centerX, centerY);
+        ctx.fillText('All at Once', centerX, centerY + 15);
+
+        ctx.font = '10px sans-serif';
+        ctx.fillText('(flash warning)', centerX, centerY + 30);
+      } else {
+        // Default mode: show "psst!"
+        ctx.font = 'bold 18px sans-serif';
+        ctx.fillText('psst!', centerX, centerY);
+      }
 
       animationFrameRef.current = requestAnimationFrame(animate);
     };
@@ -119,32 +247,112 @@ export const EverythingEverywhereButton: React.FC<EverythingEverywhereButtonProp
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [animateOnHover, isHovered]);
+  }, []);
+
+  // Handle hover state transitions
+  useEffect(() => {
+    isHoveredRef.current = isHovered;
+    const stars = starsRef.current;
+    if (!stars) return;
+
+    if (isHovered) {
+      // Transition to ZOOMING MODE: Add 18 more stars
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const outerRadius = canvas.width / 2;
+      const flashColors = ['#ff00ff', '#00ffff', '#ffff00', '#ff0080', '#00ff80', '#ff8000'];
+
+      // Convert existing floating stars to zooming stars
+      stars.forEach((star) => {
+        if (!star.markedForRemoval) {
+          // Convert floatX/floatY back to polar coordinates
+          const dx = star.floatX! - centerX;
+          const dy = star.floatY! - centerY;
+          star.angle = Math.atan2(dy, dx);
+          star.distance = Math.sqrt(dx * dx + dy * dy);
+          star.flashProgress = 0;
+        }
+      });
+
+      // Add 18 new stars for zooming effect (total 36)
+      for (let i = 0; i < 18; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const distance = outerRadius;
+        stars.push({
+          angle,
+          distance,
+          speed: 0.5 + Math.random() * 1,
+          flashProgress: 0,
+          flashColor: flashColors[Math.floor(Math.random() * flashColors.length)],
+          markedForRemoval: false
+        });
+      }
+    } else {
+      // Transition to FLOATING MODE: Keep first 18, flash and remove extras
+      stars.forEach((star, index) => {
+        if (index >= 18) {
+          star.markedForRemoval = true;
+          star.flashProgress = 1; // Start flash
+          // Capture current position for flash
+          const canvas = canvasRef.current;
+          if (canvas) {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            star.floatX = centerX + Math.cos(star.angle) * star.distance;
+            star.floatY = centerY + Math.sin(star.angle) * star.distance;
+          }
+        } else {
+          // Convert first 18 stars back to floating mode
+          const canvas = canvasRef.current;
+          if (canvas) {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            star.floatX = centerX + Math.cos(star.angle) * star.distance;
+            star.floatY = centerY + Math.sin(star.angle) * star.distance;
+            star.floatVx = (Math.random() - 0.5) * 0.3;
+            star.floatVy = (Math.random() - 0.5) * 0.3;
+            star.markedForRemoval = false;
+          }
+        }
+      });
+    }
+  }, [isHovered]);
 
   return (
     <button
       onClick={onClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="fixed bottom-8 right-8 z-50 px-6 py-4 rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 font-bold text-sm overflow-hidden"
-      style={{ position: 'fixed' }}
+      className="fixed z-50 outline-none focus:outline-none rounded-full"
+      style={{
+        position: 'fixed',
+        bottom: '-1.5rem',
+        right: '-1.5rem',
+        padding: 0,
+        background: 'transparent',
+        border: 'none',
+        width: '240px',
+        height: '240px',
+        transform: isHovered ? 'scale(2)' : 'scale(1)',
+        transformOrigin: 'center center',
+        transition: 'transform 500ms ease-in-out'
+      }}
       aria-label="Everything, Everywhere, All at Once"
     >
       {/* Starfield Canvas Background */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 w-full h-full"
-        style={{ background: 'linear-gradient(135deg, #1a0033 0%, #000000 100%)' }}
+        className="absolute top-1/2 left-1/2"
+        style={{
+          width: '240px',
+          height: '240px',
+          transform: 'translate(-50%, -50%) scale(0.667)',
+          opacity: 1
+        }}
       />
-
-      {/* Button Content */}
-      <div className="relative z-10 flex flex-col items-center gap-1 text-white">
-        <span className="text-xs">🌀</span>
-        <span>Everything,</span>
-        <span>Everywhere,</span>
-        <span>All at Once</span>
-        <span className="text-xs text-gray-200 font-normal mt-1">(flash warning)</span>
-      </div>
     </button>
   );
 };

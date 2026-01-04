@@ -51,7 +51,9 @@ const stillComponents = [
         spinDuration={4000}
       /> 
       
-      <EverythingEverywhereButton onClick={() => setRouletteKey(prev => prev + 1)} />
+      <EverythingEverywhereButton
+        onClick={() => setRouletteKey(prev => prev + 1)}
+      />
     </div>
   );
 };
