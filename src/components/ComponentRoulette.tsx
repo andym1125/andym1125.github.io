@@ -84,8 +84,8 @@ export const ComponentRoulette: React.FC<ComponentRouletteProps> = ({
     : 'opacity-100 scale-100';
 
   return (
-    <div className="">
-      <div className={`transition-all duration-100 ease-in-out ${transitionClasses}`}>
+    <div className="h-full w-full">
+      <div className={`h-full w-full transition-all duration-100 ease-in-out ${transitionClasses}`}>
         {isSpinning ? spinningComponents[currentIndex] : stillComponents[currSafeIndex]}
       </div>
     </div>

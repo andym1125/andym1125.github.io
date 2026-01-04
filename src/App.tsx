@@ -14,6 +14,7 @@ import GlassMorphismResume from './components/Resume/GlassMorphismResume'
 import PostcardResume from './components/Resume/PostcardResume'
 import TronResume from './components/TronTheme/TronResume'
 import ComponentRoulette from './components/ComponentRoulette'
+import EverythingEverywhereButton from './components/EverythingEverywhereButton'
 
 /**
  * An example App component to demonstrate the ComponentRoulette in fullscreen.
@@ -50,16 +51,7 @@ const stillComponents = [
         spinDuration={4000}
       /> 
       
-      {/* Floating "Spin Again" button */}
-      <button
-        onClick={() => setRouletteKey(prev => prev + 1)}
-        className="fixed bottom-8 right-8 z-50 w-20 h-20 bg-gray-700 text-white rounded-full shadow-lg hover:bg-gray-600 transition-all duration-300 flex items-center justify-center transform hover:scale-110"
-        aria-label="Spin Again"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h5M20 20v-5h-5M4 4l1.5 1.5A9 9 0 0120.5 11M20 20l-1.5-1.5A9 9 0 013.5 13" />
-        </svg>
-      </button>
+      <EverythingEverywhereButton onClick={() => setRouletteKey(prev => prev + 1)} />
     </div>
   );
 };
